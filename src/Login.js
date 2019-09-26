@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import cultilabs from './img/cultilabs-green-w922.png';
 import kist from './img/kist.png';
 
@@ -52,7 +53,7 @@ const Login = () => {
                 <CenterTextContainer><h3>로그인</h3></CenterTextContainer><hr/><br/><br/>
                 <InputContainer><Input type="text" id="id" name="id" placeholder="아이디"/></InputContainer><br/>
                 <InputContainer><Input type="password" id="pw" name="pw" placeholder="비밀번호"/></InputContainer>
-                <ButtonContainer><Button><ButtonText>로그인</ButtonText></Button></ButtonContainer>
+                <ButtonContainer><Link to="/list" style={{ textDecoration: 'none' }}><Button><ButtonText>로그인</ButtonText></Button></Link></ButtonContainer>
             </Card>
         </Container>
     );
