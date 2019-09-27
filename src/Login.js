@@ -1,19 +1,9 @@
 import React from 'react';
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import cultilabs from './img/cultilabs-green-w922.png';
-import kist from './img/kist.png';
 
 const Container = styled.div`
     display: table; width: 100%; min-width: 320px; height: 100%; border-collapse: separate;
-`;
-
-const LogoContainer = styled.div`
-    max-height: 80px; margin: 40px 0; padding: 0; text-align: center;
-`;
-
-const Logo = styled.img`
-    height: 72px; margin: 0 20px;
 `;
 
 const Card = styled.div`
@@ -25,7 +15,7 @@ const Input = styled.input`
 `;
 
 const InputContainer = styled.div`
-    position: relative; height: 29px; margin: 0 0 14px; padding: 10px 35px 10px 15px; border: solid 1px #85a4a4; border-radius: 4px; background: #fff;
+    position: relative; margin: 0 0 14px; padding: 10px 35px 10px 15px; border: solid 1px #85a4a4; border-radius: 4px; background: #fff;
 `;
 
 const ButtonContainer = styled.div`
@@ -45,10 +35,6 @@ const CenterTextContainer = styled.div`text-align: center;`;
 const Login = () => {
     return (
         <Container>
-            <LogoContainer>
-                <Logo src={cultilabs}></Logo>
-                <Logo src={kist}></Logo>
-            </LogoContainer>
             <Card>
                 <CenterTextContainer><h3>로그인</h3></CenterTextContainer><hr/><br/><br/>
                 <InputContainer><Input type="text" id="id" name="id" placeholder="아이디"/></InputContainer><br/>

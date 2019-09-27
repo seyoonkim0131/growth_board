@@ -1,6 +1,6 @@
 @font-face {
     font-family: "Noto Sans";
-    font-weight: 200;
+    font-weight: 100;
     src: url("../public/NotoSansKR-Thin.otf") format("otf")
 }
 @font-face {
@@ -17,5 +17,15 @@
 @font-face {
     font-family: "Noto Sans";
     font-weight: 500;
+    src: url("../public/NotoSansKR-Medium.otf") format("otf")
+}
+@font-face {
+    font-family: "Noto Sans";
+    font-weight: 700;
     src: url("../public/NotoSansKR-Bold.otf") format("otf")
+}
+@font-face {
+    font-family: "Noto Sans";
+    font-weight: 900;
+    src: url("../public/NotoSansKR-Black.otf") format("otf")
 }
