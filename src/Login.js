@@ -2,6 +2,12 @@ import React from 'react';
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
+import { graphql } from 'react-apollo';
+import gql from 'graphql-tag';
+import { tsConstructorType } from '@babel/types';
+
+
+
 const Container = styled.div`
     display: table; width: 100%; min-width: 320px; height: 100%; border-collapse: separate;
 `;
@@ -32,17 +38,68 @@ const ButtonText = styled.span`
 
 const CenterTextContainer = styled.div`text-align: center;`;
 
-const Login = () => {
-    return (
-        <Container>
-            <Card>
-                <CenterTextContainer><h3>로그인</h3></CenterTextContainer><hr/><br/><br/>
-                <InputContainer><Input type="text" id="id" name="id" placeholder="아이디"/></InputContainer><br/>
-                <InputContainer><Input type="password" id="pw" name="pw" placeholder="비밀번호"/></InputContainer>
-                <ButtonContainer><Link to="/list" style={{ textDecoration: 'none' }}><Button><ButtonText>로그인</ButtonText></Button></Link></ButtonContainer>
-            </Card>
-        </Container>
-    );
-};
+class Login extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            id: '',
+            password: '',
+        }
+    }
+    handleSubmit = async () => {
+        const {id, password} = this.state
 
-export default Login;
+        await this.props.SignIn(id, password).then(({data}) => {
+            if(data.SignIn.ok) {
+                localStorage.setItem('id', this.state.id)
+                window.location.href='/list'
+            } else {
+                return false
+            }
+        }).catch(e => {
+            if(/id/i.test(e.message)) {
+                console.log('id error')
+            }
+            if(/password/i/test(e.message)) {
+                console.log('password error')
+            }
+        })
+    }
+
+    onChangeId = (e) => {
+        this.setState({id: e.target.value})
+    }
+    onChangePassword = (e) => {
+        this.setState({password: e.target.value})
+    }
+
+    render() {
+        return (
+            <Container>
+                <Card>
+                    <CenterTextContainer><h3>로그인</h3></CenterTextContainer><hr/><br/><br/>
+                    <InputContainer><Input type="text" id="id" name="id" placeholder="아이디" onChange={this.onChangeId}/></InputContainer><br/>
+                    <InputContainer><Input type="password" id="password" name="password" placeholder="비밀번호" onChange={this.onChangePassword}/></InputContainer>
+                    <ButtonContainer><Button onClick={this.handleSubmit}><ButtonText>로그인</ButtonText></Button></ButtonContainer>
+                </Card>
+            </Container>
+        )
+    }
+}
+
+export default graphql(
+    gql`
+        mutation SignIn($id: String!, $password: String!){
+            SignIn(id: $id, password: $password) {
+                ok
+                error
+                token
+            }
+        }
+    `,
+    {
+        props: ({ mutate }) => ({
+            SignIn: (id, password) => mutate({variables: {id, password}})
+        })
+    }
+)(Login);
