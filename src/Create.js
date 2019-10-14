@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { Container as BContainer, Button, InputGroup, FormControl, Row, Col } from "react-bootstrap";
+import { Container as BContainer, Button, InputGroup, FormControl, Row, Col } from "react-bootstrap"
 
 const Container = styled.div`width:40%; float: right;`;
 
@@ -39,8 +39,8 @@ function Create() {
                 <label for='file5'></label><input type='file' id='file5' style={{display:'none'}}/> */}
             </div><br/>
             <div>
-                <Link to='/list'><Button style={{float:'left'}}>취소</Button></Link>
-                <Link to='/list'><Button style={{float:'right'}}>저장</Button></Link>
+                {/* <Link to='/list'><Button style={{float:'left'}}>취소</Button></Link>
+                <Link to='/list'><Button style={{float:'right'}}>저장</Button></Link> */}
             </div>
         </BContainer>
     );

@@ -1,12 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 
-import { graphql } from 'react-apollo';
+import { useMutation } from '@apollo/react-hooks'
 import gql from 'graphql-tag';
-import { tsConstructorType } from '@babel/types';
-
-
 
 const Container = styled.div`
     display: table; width: 100%; min-width: 320px; height: 100%; border-collapse: separate;
@@ -38,7 +34,51 @@ const ButtonText = styled.span`
 
 const CenterTextContainer = styled.div`text-align: center;`;
 
-class Login extends React.Component {
+const SIGNIN = gql`
+    mutation SignIn($id: String!, $password: String!){
+        SignIn(id: $id, password: $password) {
+            ok
+            error
+            token
+        }
+    }
+`
+
+function Signin() {
+    const [id, setId] = useState('')
+    const [password, setPassword] = useState('')
+    const [SignIn, { loading, error, data }] = useMutation(
+        SIGNIN, {variables: {id: id, password: password}}
+    );
+    if(loading) return 'loading...'
+    if(error) return `Error... ${error.message}`
+    if(data !== null) {
+        if(data) {
+            localStorage.setItem('id', id)
+            window.location.href = '/list'
+        }
+    }
+
+    return (
+        <form onSubmit={
+            e => {
+                e.preventDefault()
+                SignIn({ variables: {id: id, password: password}})
+            }
+        }>
+            <Container>
+                <Card>
+                    <CenterTextContainer><h3>로그인</h3></CenterTextContainer><hr/><br/><br/>
+                    <InputContainer><Input type="text" id="id" name="id" placeholder="아이디" onChange={e => setId(e.target.value)}/></InputContainer><br/>
+                    <InputContainer><Input type="password" id="password" name="password" placeholder="비밀번호" onChange={e => setPassword(e.target.value)}/></InputContainer>
+                    <ButtonContainer><Button type="submit"><ButtonText>로그인</ButtonText></Button></ButtonContainer>
+                </Card>
+            </Container>
+        </form>
+    );
+}
+
+export default class Login extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -46,60 +86,9 @@ class Login extends React.Component {
             password: '',
         }
     }
-    handleSubmit = async () => {
-        const {id, password} = this.state
-
-        await this.props.SignIn(id, password).then(({data}) => {
-            if(data.SignIn.ok) {
-                localStorage.setItem('id', this.state.id)
-                window.location.href='/list'
-            } else {
-                return false
-            }
-        }).catch(e => {
-            if(/id/i.test(e.message)) {
-                console.log('id error')
-            }
-            if(/password/i/test(e.message)) {
-                console.log('password error')
-            }
-        })
-    }
-
-    onChangeId = (e) => {
-        this.setState({id: e.target.value})
-    }
-    onChangePassword = (e) => {
-        this.setState({password: e.target.value})
-    }
-
     render() {
         return (
-            <Container>
-                <Card>
-                    <CenterTextContainer><h3>로그인</h3></CenterTextContainer><hr/><br/><br/>
-                    <InputContainer><Input type="text" id="id" name="id" placeholder="아이디" onChange={this.onChangeId}/></InputContainer><br/>
-                    <InputContainer><Input type="password" id="password" name="password" placeholder="비밀번호" onChange={this.onChangePassword}/></InputContainer>
-                    <ButtonContainer><Button onClick={this.handleSubmit}><ButtonText>로그인</ButtonText></Button></ButtonContainer>
-                </Card>
-            </Container>
+            <Signin/>
         )
     }
 }
-
-export default graphql(
-    gql`
-        mutation SignIn($id: String!, $password: String!){
-            SignIn(id: $id, password: $password) {
-                ok
-                error
-                token
-            }
-        }
-    `,
-    {
-        props: ({ mutate }) => ({
-            SignIn: (id, password) => mutate({variables: {id, password}})
-        })
-    }
-)(Login);
