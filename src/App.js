@@ -31,14 +31,14 @@ function App() {
         </LogoContainer>
         <Router>
             <Switch>
-                {/* <Route exact path="/" component={Home}></Route> */}
+                <Route exact path="/" render={() => localStorage.getItem('id') !== null ? <List/> : <Login/>}></Route>
                 <Route path="/login" component={Login}></Route>
                 {/* <Route path="/create/:id" component={Create}></Route> */}
                 <Route path="/create" component={Create}></Route>
                 {/* <Route path="/update/:boardId" component={Update}></Route> */}
-                <Route path="/read" component={Read}></Route>
+                <Route exact path="/read/:no" component={Read}></Route>
                 {/* <Route path="/read/:boardId" component={Read}></Route> */}
-                <Route path="/list" component={List}></Route>
+                <Route path="/list" render={() => localStorage.getItem('id') !== null ? <List/> : <Login/>}></Route>
             </Switch>
         </Router>
     </ApolloProvider>

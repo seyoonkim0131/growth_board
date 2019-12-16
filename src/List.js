@@ -4,28 +4,11 @@ import { Link } from "react-router-dom";
 
 import { Container as BContainer, Table, Pagination, Button } from "react-bootstrap"
 import gql from 'graphql-tag';
-// import { Query } from 'react-apollo';
 import { useQuery } from '@apollo/react-hooks'
-import Moment from 'react-moment'
 
 const Container = styled.div`display: table; width: 100%; min-width: 320px; height: 100%; border-collapse: separate;`;
 
 const LinkText = styled.span`color: #000;`;
-
-const ReadBoardAllQuery = gql`
-    query ReadBoardAll {
-        ReadBoardAll {
-            ok
-            error
-            board {
-                no
-                title
-                createId
-                updateDate
-            }
-        }
-    }
-`;
 
 const READ_BOARD_ALL = gql`
     query ReadBoardAll {
@@ -42,18 +25,31 @@ const READ_BOARD_ALL = gql`
     }
 `
 
+function convertDate(date) {
+    let tempDate = new Date(date-234798274)
+    let year = tempDate.getFullYear()
+    let month = tempDate.getMonth() + 1
+    let day = tempDate.getDate()
+    if(month <= 9) {
+        month = '0'+month
+    }
+    return year + '.' + month + '.' + day
+}
+
+
+
 function BoardList() {
     const { loading, error, data } = useQuery(READ_BOARD_ALL)
     if(loading) return 'Loading...'
     if(error) return `Error... ${error.message}`
     if(data !== null) {
         const boards = data.ReadBoardAll
-        let boardArr = boards.board.map((list) =>
+        let boardArr = boards.board.sort((a,b)=> a-b).reverse().map((list) =>
             <tr key={list.no}>
                 <td>{list.no}</td>
-                <td><Link to='/read' style={{ textDecoration: 'none' }}><LinkText>{list.title}</LinkText></Link></td>
+                <td><Link to={`/read/${list.no}`} style={{ textDecoration: 'none' }}><LinkText>{list.title}</LinkText></Link></td>
                 <td>{list.createId}</td>
-                <td><Moment unix={true} format="YYYY-MM-DD">{list.updateDate}</Moment></td>
+                <td>{convertDate(list.updateDate)}</td>
             </tr>
         )
         return boardArr
@@ -75,31 +71,12 @@ export default class List extends React.Component {
                                 <tr>
                                     <th>#</th>
                                     <th>제목</th>
-                                    <th>작성자</th>
+                                    <th style={{width:'20%'}}>작성자</th>
                                     <th>작성일</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <BoardList/>
-                                {/* <Query query={ReadBoardAllQuery}>
-                                    {({ loading, error, data}) => {
-                                        if(loading) return 'Loading...'
-                                        if(error) return `Error: ${error.message}`
-                                        if(data !== null) {
-                                            const boards = data.ReadBoardAll
-                                            let boardArr = boards.board.map((list) =>
-                                                <tr key={list.no}>
-                                                    <td>{list.no}</td>
-                                                    <td><Link to='/read' style={{ textDecoration: 'none' }}><LinkText>{list.title}</LinkText></Link></td>
-                                                    <td>{list.createId}</td>
-                                                    <td><Moment unix={true} format="YYYY-MM-DD">{list.updateDate}</Moment></td>
-                                                </tr>
-                                            )
-                                            return boardArr
-                                        }
-                                    }}
-                                </Query> */}
-                                {/* <Boards></Boards> */}
                             </tbody>
                         </Table>
                         <Link to='/create'><Button variant="outline-success" style={{float:'right'}}>글쓰기</Button></Link>
